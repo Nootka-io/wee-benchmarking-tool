@@ -1,29 +1,43 @@
 from rich import print
+from inspect import isclass
+from pkgutil import iter_modules
+from pathlib import Path
+from importlib import import_module
 
 
-def extract(output_dir):
+def get_extractors():
+    # iterate through the modules in the current package
+    package_dir = str(Path('aeb_cli/extractors').resolve())
+
+    for (_, module_name, _) in iter_modules([package_dir]):
+
+        # import the module and iterate through its attributes
+        module = import_module(f"extractors.{module_name}")
+
+        for attribute_name in dir(module):
+            attribute = getattr(module, attribute_name)
+
+            if isclass(attribute) and 'Extract' in attribute_name and not attribute_name in ['BaseExtractor']:
+                yield attribute
+
+def list_available_extractors():
+    extractors = [x.name for x in get_extractors()]
+    return extractors
+
+def extract(output_dir, extractors_to_run = None):
     # ToDo: autoload these
     # ToDo: add config option for which to run
 
-    from extractors.run_goose import Goose3Extract
-    g_run = Goose3Extract(output_dir)
-    g_run()
+    if extractors_to_run is None:
+        extractors_to_run = list_available_extractors()
 
-    from extractors.run_trafilatura import TrafilaturaExtract
-    t_run = TrafilaturaExtract(output_dir)
-    t_run()
+    extractors = get_extractors()
 
-    from extractors.run_resiliparse import ResiliparseExtract
-    rp_run = ResiliparseExtract(output_dir)
-    rp_run()
-
-    from extractors.run_newspaper3k import Newspaper3kExtract
-    np_run = Newspaper3kExtract(output_dir)
-    np_run()
-
-    from extractors.run_boilerpy3 import BoilerPy3Extract
-    bp_run = BoilerPy3Extract(output_dir)
-    bp_run()
+    for extractor in extractors:
+        if extractor.name in extractors_to_run:
+            _run = extractor(output_dir)
+            _run()
+            del _run
 
     return True
 

@@ -6,7 +6,7 @@ from tokenizer import tokenize
 from collections import Counter
 
 
-def eval_results(output_dir):
+def eval_results(output_dir, extractors_to_eval = []):
     results = {}
 
     # open ground truth
@@ -17,6 +17,11 @@ def eval_results(output_dir):
 
     # open all the extractions
     for path in sorted(Path(f'output/{output_dir}').glob('*.json')):
+        if not extractors_to_eval:
+            pass
+        elif not bool([x for x in extractors_to_eval if(x in str(path))]):
+            continue
+
         confusion_matrix = {
             'true_positives': 0,
             'true_negatives': 0,
