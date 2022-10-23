@@ -1,2 +1,12 @@
 git+https://github.com/codelucas/newspaper.git
-boilerpy3==1.0.6
+boilerpy3==1.0.
+goose3==3.1.12
+trafilatura==1.4.0
+inscriptis==2.3.1
+news-please==1.5.22
+Resiliparse==0.13.5
+
+shellingham==1.5.0
+typer==0.4.2
+rich==12.6.0
+

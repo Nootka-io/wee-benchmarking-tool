@@ -28,7 +28,7 @@ def extract(output_dir, extractors_to_run = None):
     # ToDo: autoload these
     # ToDo: add config option for which to run
 
-    if extractors_to_run is None:
+    if not extractors_to_run:
         extractors_to_run = list_available_extractors()
 
     extractors = get_extractors()

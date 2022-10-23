@@ -19,7 +19,7 @@ def eval_results(output_dir, extractors_to_eval = []):
     for path in sorted(Path(f'output/{output_dir}').glob('*.json')):
         if not extractors_to_eval:
             pass
-        elif not bool([x for x in extractors_to_eval if(x in str(path))]):
+        elif path.stem not in extractors_to_eval:
             continue
 
         confusion_matrix = {

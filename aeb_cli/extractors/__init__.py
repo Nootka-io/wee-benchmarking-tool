@@ -22,7 +22,7 @@ class BaseExtractor:
             start = time.time()
             res = self.extract(html)
             self.elapsed_time += time.time() - start
-            self.extracts[item_id] = {'articleBody': res}
+            self.extracts[item_id] = {'articleBody': res if res else ''}
         # write to json file
         self.write_to_json()
 

@@ -16,7 +16,7 @@ app = typer.Typer()
 
 @app.command()
 def run(
-    output_dir: Optional[str] = typer.Argument('base'),
+    output_dir: Optional[str] = typer.Argument('default'),
     extractors: Optional[List[str]] = typer.Option(None),
 ):
     print('Running the complete extraction and evaluation')
