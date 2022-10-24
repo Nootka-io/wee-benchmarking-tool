@@ -24,7 +24,7 @@ def list_available_extractors():
     extractors = [x.name for x in get_extractors()]
     return extractors
 
-def extract(output_dir, extractors_to_run = None):
+def extract(output_dir, extractors_to_run = None, extract_in_parallel = False):
     # ToDo: autoload these
     # ToDo: add config option for which to run
 
@@ -35,7 +35,7 @@ def extract(output_dir, extractors_to_run = None):
 
     for extractor in extractors:
         if extractor.name in extractors_to_run:
-            _run = extractor(output_dir)
+            _run = extractor(output_dir, extract_in_parallel)
             _run()
             del _run
 

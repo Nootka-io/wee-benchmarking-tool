@@ -27,7 +27,8 @@ def run(
 @app.command()
 def run_extract(
     output_dir: Optional[str] = typer.Argument('default'),
-    extractors: Optional[List[str]] = typer.Option(None)
+    extractors: Optional[List[str]] = typer.Option(None),
+    extract_in_parallel: bool = typer.Option(False, "--extract-in-parallel")
 ):
     if output_dir == 'base':
         print('`base` is a protected output dir, input a different output-dir')
@@ -49,7 +50,7 @@ def run_extract(
         # transient=True
     ) as progress:
         progress.add_task(description=f"Running `{what_runs}` extractors...", total=None)
-        response = extract.extract(output_dir, extractors)
+        response = extract.extract(output_dir, extractors, extract_in_parallel)
     print('[bold green]Done running extractors \u2714 [/bold green]')
 
 @app.command()
