@@ -16,13 +16,18 @@ A tool for evaluating extractions from webpages. Evaluate article, price, and la
 - Coming soon: Support for custom datasets
 
 ## Installation
-requirements for installing for local dev:
-- pip-22.3 `pip install --upgrade pip` this is a requirement to install editable from pyproject.toml
-
+- Requirements:
+  - pip-22.3 
+  - python>=3.8
+1) clone the repo ``
+2) cd into the directory you cloned it to
+3) create a venv `python3 -m venv venv`
+4) activate venv `source venv/bin/activate`
+5) `pip install -e .`
 
 ## Running the scripts
 It's built with typer so:
-- `python aeb_cli/main.py run new`
+- `python weeaeb_cli/main.py run new`
 - `python aeb_cli/main.py --help`
 
 ## How to add extractors
