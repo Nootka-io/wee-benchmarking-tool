@@ -16,6 +16,9 @@ A tool for evaluating extractions from webpages. Evaluate article, price, and la
 - Coming soon: Support for custom datasets
 
 ## Installation
+requirements for installing for local dev:
+- pip-22.3 `pip install --upgrade pip` this is a requirement to install editable from pyproject.toml
+
 
 ## Running the scripts
 It's built with typer so:
@@ -27,7 +30,7 @@ Only one file needs to be added to `wee_cli/extractors/`. The title should be ru
 
 See: [https://github.com//extractors/]() for an examples
 
-ToDo: add better documention and examples
+ToDo: add better documentation and examples
 
 ## Roadmap
 - language extraction benchmarks

@@ -1,0 +1,49 @@
+[project]
+name = "wee-benchmarking-tool"
+requires-python = ">=3.8"
+version = "0.0.1"
+description = ""
+authors = [
+    {name = "Lawrence Stewart" }
+]
+readme = "README.md"
+dependencies = [
+    "typer[all]==0.4.2",
+    "rich==12.6.0",
+    "spacy==3.4.2",
+    "boilerpy3==1.0.6",
+    "trafilatura==1.4.0",
+    "newspaper3k @ git+https://github.com/codelucas/newspaper.git",
+    "goose3==3.1.12",
+    "inscriptis==2.3.1",
+    "news-please==1.5.22",
+    "Resiliparse==0.13.5"
+]
+
+[project.urls]
+homepage = "https://github.com/MartinThoma/infer_pyproject"
+documentation = "https://github.com/MartinThoma/infer_pyproject"
+repository = "https://github.com/MartinThoma/infer_pypr"
+
+[tool.setuptools]
+packages = ["wee_cli"]
+package-dir = {"" = "."}
+
+# [tool.setuptools.packages.find]
+# where = ["*"]
+#include = ["wee_cli"]
+# namespaces = false
+
+# include = ["wee_cli*", "", "*"]
+# exclude = ["tests"]
+
+
+[project.scripts]
+wee-benchmark = "wee_cli.main:app"
+
+[build-system]
+requires = [
+    "setuptools>=40.8.0",
+    "wheel"
+]
+build-backend = "setuptools.build_meta"

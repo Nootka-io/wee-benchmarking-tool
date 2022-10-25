@@ -6,9 +6,8 @@ from rich.progress import Progress, SpinnerColumn, TextColumn, TimeElapsedColumn
 from typing import Optional, List
 import os
 
-import extract
-from evaluate import eval_results as evaluate
-from extract import list_available_extractors
+from .evaluate import eval_results as evaluate
+from .extract import list_available_extractors, extract
 
 
 app = typer.Typer()
@@ -50,7 +49,7 @@ def run_extract(
         # transient=True
     ) as progress:
         progress.add_task(description=f"Running `{what_runs}` extractors...", total=None)
-        response = extract.extract(output_dir, extractors, extract_in_parallel)
+        response = extract(output_dir, extractors, extract_in_parallel)
     print('[bold green]Done running extractors \u2714 [/bold green]')
 
 @app.command()

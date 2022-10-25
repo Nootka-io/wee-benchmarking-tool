@@ -2,7 +2,7 @@ import difflib
 from statistics import mean
 import json
 from pathlib import Path
-from tokenizer import tokenize
+from .tokenizer import tokenize
 from collections import Counter
 
 

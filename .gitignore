@@ -4,3 +4,4 @@ venv/
 output/*
 !/output/base/
 __pycache__/
+*.egg-info/

@@ -7,7 +7,7 @@ from importlib import import_module
 
 def get_extractors():
     # iterate through the modules in the current package
-    package_dir = str(Path('aeb_cli/extractors').resolve())
+    package_dir = str(Path('wee_cli/extractors').resolve())
 
     for (_, module_name, _) in iter_modules([package_dir]):
 
@@ -25,8 +25,6 @@ def list_available_extractors():
     return extractors
 
 def extract(output_dir, extractors_to_run = None, extract_in_parallel = False):
-    # ToDo: autoload these
-    # ToDo: add config option for which to run
 
     if not extractors_to_run:
         extractors_to_run = list_available_extractors()
