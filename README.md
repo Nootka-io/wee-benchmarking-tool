@@ -87,7 +87,7 @@ Complex Score Results - comparing tokens from both ground truth and prediction
 | resiliparse       | 0.8528   | 0.9852    | 0.8529 | 0.9143 | 0.8819          | 60.4696   |
 | trafilatura       | 0.9124   | 0.9485    | 0.908  | 0.9278 | 0.8567          | 28.5527   |
 
-As you can see goose3 take a significant boost running in parallel surpassing others that also gain. Most surprising is resiliparse, still the fastest, but significantly slower in parallel than sequentially. 
+As you can see goose3 take a significant boost running in parallel surpassing others that also gain. Most surprising is resiliparse, still the fastest, but significantly slower in parallel than sequentially. Part of the issue with resiliparse might be the use of C++/Cython, which may not play well with Dask and dask bags, but this needs to be investigated more.   
 
 **ToDos:** Provide more insights into the metrics and how the metrics are calculated. 
 
