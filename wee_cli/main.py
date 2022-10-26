@@ -15,20 +15,27 @@ app = typer.Typer()
 
 @app.command()
 def run(
-    output_dir: Optional[str] = typer.Argument('default'),
-    extractors: Optional[List[str]] = typer.Option(None),
+    output_dir: Optional[str] = typer.Argument('default', help="the folder where the outputs will be saved and evaluations created from"),
+    extractors: Optional[List[str]] = typer.Option(None, help="which extractors your want to run. Must match the `name`. Use `list-extractors to view available extractors.`"),
+    extract_in_parallel: bool = typer.Option(False, "--extract-in-parallel", help="whether to run the extractors in parallel with Dask")
 ):
+    """
+    Run both the extractors and the evaluation scripts.
+    """
     print('Running the complete extraction and evaluation')
-    run_extract(output_dir, extractors)
+    run_extract(output_dir, extractors, extract_in_parallel)
     run_eval(output_dir, extractors)
 
 
 @app.command()
 def run_extract(
-    output_dir: Optional[str] = typer.Argument('default'),
-    extractors: Optional[List[str]] = typer.Option(None),
-    extract_in_parallel: bool = typer.Option(False, "--extract-in-parallel")
+    output_dir: Optional[str] = typer.Argument('default', help="the folder where the outputs will be saved and evaluations created from"),
+    extractors: Optional[List[str]] = typer.Option(None, help="which extractors your want to run. Must match the `name`. Use `list-extractors to view available extractors.`"),
+    extract_in_parallel: bool = typer.Option(False, "--extract-in-parallel", help="whether to run the extractors in parallel with Dask")
 ):
+    """
+    Run the extractors and generate the outputs to the specified output directory.
+    """
     if output_dir == 'base':
         print('`base` is a protected output dir, input a different output-dir')
         raise typer.Exit()
@@ -42,6 +49,8 @@ def run_extract(
 
     what_runs = extractors if extractors else 'ALL'
 
+    # response = extract(output_dir, extractors, extract_in_parallel)
+
     with Progress(
         SpinnerColumn(),
         TextColumn('[progress.description]{task.description}'),
@@ -54,9 +63,12 @@ def run_extract(
 
 @app.command()
 def run_eval(
-    output_dir: Optional[str] = typer.Argument('default'),
-    extractors: Optional[List[str]] = typer.Option(None),
+    output_dir: Optional[str] = typer.Argument('default', help="the folder where the outputs were saved."),
+    extractors: Optional[List[str]] = typer.Option(None, help="which extractors your want to run. Must match the `name`. Use `list-extractors to view available extractors.`"),
 ):
+    """
+    Evaluate the results from an output directory.
+    """
     # validate extractors
     if extractors:
         validate_extractors(extractors)
@@ -106,8 +118,7 @@ def run_eval(
 @app.command()
 def list_extractors():
     """
-    prints a list of all the available extractors.
-    :return:
+    Print a list of all the available extractors.
     """
     print(list_available_extractors())
 

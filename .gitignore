@@ -3,5 +3,7 @@ venv/
 
 output/*
 !/output/base/
+!/output/base-parallel/
 __pycache__/
 *.egg-info/
+dist/

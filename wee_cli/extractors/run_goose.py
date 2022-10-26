@@ -1,5 +1,5 @@
 from goose3 import Goose
-from extractors import BaseExtractor
+from wee_cli.extractors import BaseExtractor
 
 class Goose3Extract(BaseExtractor):
 

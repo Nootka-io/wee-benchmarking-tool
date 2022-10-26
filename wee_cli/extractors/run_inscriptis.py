@@ -1,5 +1,5 @@
 from inscriptis import get_text
-from extractors import BaseExtractor
+from wee_cli.extractors import BaseExtractor
 
 class InscriptisExtract(BaseExtractor):
 

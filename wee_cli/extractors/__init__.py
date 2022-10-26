@@ -43,10 +43,9 @@ class BaseExtractor:
         start = time.time()
         bagged = db.from_sequence(sequence)\
             .map(self.parallel_extract)
-        self.elapsed_time += time.time() - start
         bagged = bagged.compute()
+        self.elapsed_time = time.time() - start
         self.extracts = {item['item_id']:{'articleBody': item['articleBody']} for item in bagged}
-        # breakpoint()
 
     def extract_sequentially(self):
         for path in Path('datasets/scrappinghub_aeb/html').glob('*.html.gz'):
@@ -56,11 +55,12 @@ class BaseExtractor:
             start = time.time()
             res = self.extract(html)
             self.elapsed_time += time.time() - start
-            self.extracts[item_id] = {'articleBody': res if res else ''}
+            self.extracts[item_id] = {'articleBody': res if res else ' '}
 
     def parallel_extract(self, _x):
         html = _x['html']
-        _x['articleBody'] = self.extract(html)
+        res = self.extract(html)
+        _x['articleBody'] = res if res else ' '
         return _x
 
     @staticmethod

@@ -1,4 +1,4 @@
-from extractors import BaseExtractor
+from wee_cli.extractors import BaseExtractor
 from trafilatura import bare_extraction
 
 

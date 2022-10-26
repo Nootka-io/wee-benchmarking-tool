@@ -1,5 +1,5 @@
 from newspaper import Article
-from extractors import BaseExtractor
+from wee_cli.extractors import BaseExtractor
 
 
 class Newspaper3kExtract(BaseExtractor):

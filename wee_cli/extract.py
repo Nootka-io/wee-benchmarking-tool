@@ -12,7 +12,7 @@ def get_extractors():
     for (_, module_name, _) in iter_modules([package_dir]):
 
         # import the module and iterate through its attributes
-        module = import_module(f"extractors.{module_name}")
+        module = import_module(f"wee_cli.extractors.{module_name}")
 
         for attribute_name in dir(module):
             attribute = getattr(module, attribute_name)

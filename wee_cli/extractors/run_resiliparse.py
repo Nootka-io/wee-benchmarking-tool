@@ -1,4 +1,4 @@
-from extractors import BaseExtractor
+from wee_cli.extractors import BaseExtractor
 from resiliparse.parse.html import HTMLTree
 from resiliparse.extract.html2text import extract_plain_text
 
