@@ -59,7 +59,7 @@ def eval_results(output_dir, extractors_to_eval = []):
 
         confusion_matrix_list = []
         for key in ground_truth['extracts'].keys():
-            # we compare the tokenized strings and build the confussion matrix
+            # we compare the tokenized strings and build the confusion matrix
             # gt_shingles = _all_shingles(ground_truth['extracts'][key].get('articleBody', ''), 4)
             # pred_shingles = _all_shingles(pred_results['extracts'][key].get('articleBody', ''), 4)
             gt_tokens = tokenize(ground_truth['extracts'][key].get('articleBody', ''))
@@ -101,8 +101,8 @@ def eval_results(output_dir, extractors_to_eval = []):
 
 def do_complex_scoring(gt_tokens, pred_tokens):
     tp = fp = fn = tn = 0
-    pred_token_counts = dict(Counter(gt_tokens))
-    gt_token_counts = dict(Counter(pred_tokens))
+    pred_token_counts = dict(Counter(pred_tokens))
+    gt_token_counts = dict(Counter(gt_tokens))
     for key in (set(gt_token_counts) | set(pred_token_counts)):
         true_count = gt_token_counts.get(key, 0)
         pred_count = pred_token_counts.get(key, 0)
@@ -112,6 +112,7 @@ def do_complex_scoring(gt_tokens, pred_tokens):
     cm = [tp, fp, fn, tn]
     cm_s = sum(cm)
     # Normalize metrics so that longer texts do not have more weight.
+
     if cm_s > 0:
         cm = [tp/cm_s, fp/cm_s, fn/cm_s, tn/cm_s]
     # breakpoint()
