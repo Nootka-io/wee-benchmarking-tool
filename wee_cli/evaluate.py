@@ -9,6 +9,10 @@ from collections import Counter
 def eval_results(output_dir, extractors_to_eval = []):
     results = {}
 
+    # open raw truths
+    with open('./output/base/resiliparse-plain.json') as f:
+        raw_truth = json.load(f)
+
     # open ground truth
     with open('./datasets/scrappinghub_aeb/ground-truth.json') as f:
         ground_truth = json.load(f)
@@ -64,6 +68,7 @@ def eval_results(output_dir, extractors_to_eval = []):
             # pred_shingles = _all_shingles(pred_results['extracts'][key].get('articleBody', ''), 4)
             gt_tokens = tokenize(ground_truth['extracts'][key].get('articleBody', ''))
             pred_tokens = tokenize(pred_results['extracts'][key].get('articleBody', ''))
+            rt_tokens = tokenize(raw_truth['extracts'][key].get('articleBody', ''))
 
             # accuracy the difference between the 2 vectors
             # accuracy = float(gt_tokens == pred_tokens)
@@ -99,16 +104,19 @@ def eval_results(output_dir, extractors_to_eval = []):
     return results
 
 
-def do_complex_scoring(gt_tokens, pred_tokens):
+def do_complex_scoring(gt_tokens, pred_tokens, rt_tokens):
     tp = fp = fn = tn = 0
+
     pred_token_counts = dict(Counter(pred_tokens))
     gt_token_counts = dict(Counter(gt_tokens))
-    for key in (set(gt_token_counts) | set(pred_token_counts)):
+    rt_token_counts = dict(Counter(rt_tokens))
         true_count = gt_token_counts.get(key, 0)
         pred_count = pred_token_counts.get(key, 0)
+        rt_count = rt_token_counts.get(key, 0)
         tp += min(true_count, pred_count)
         fp += max(0, pred_count - true_count)
         fn += max(0, true_count - pred_count)
+        tn += max(0, rt_count - true_count)
     cm = [tp, fp, fn, tn]
     cm_s = sum(cm)
     # Normalize metrics so that longer texts do not have more weight.

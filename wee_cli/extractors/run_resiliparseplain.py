@@ -11,7 +11,7 @@ class ResiliparsePlainExtract(BaseExtractor):
     def extract(html):
         try:
             tree = HTMLTree.parse(html)
-            article = extract_plain_text(tree)
+            article = extract_plain_text(tree, list_bullets=False, alt_texts=False)
             res = article
 
         except Exception as e:
