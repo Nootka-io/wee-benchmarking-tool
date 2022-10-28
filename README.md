@@ -46,50 +46,35 @@ the ground truth
 
 Complex Score Results - comparing tokens from both ground truth and prediction
 
-| Library           | Accuracy | Precision | Recall | FScore | Mean Similarity | Items/sec |
-|-------------------|----------|-----------|--------|--------|-----------------|-----------|
-| boilerpy3         | 0.8444   | 0.8743    | 0.8412 | 0.8574 | 0.7506          | 59.2786   |
-| goose3            | 0.9675   | 0.8561    | 0.9283 | 0.8907 | 0.8344          | 9.817     |
-| inscriptis        | 0.455    | 0.9711    | 0.4561 | 0.6206 | 0.5092          | 73.4007   |
-| news-please       | 0.9248   | 0.8952    | 0.9105 | 0.9028 | 0.8133          | 4.8152    |
-| newspaper3k       | 0.943    | 0.9139    | 0.9281 | 0.9209 | 0.8868          | 7.6203    |
-| resiliparse-plain | 0.4397   | 0.9966    | 0.4398 | 0.6103 | 0.564           | 812.9227  |
-| resiliparse       | 0.8528   | 0.9852    | 0.8529 | 0.9143 | 0.8819          | 514.2251  |
-| trafilatura       | 0.9124   | 0.9485    | 0.908  | 0.9278 | 0.8567          | 22.3564   |
+|  Library          |  Accuracy | Precision | Recall | FScore | Mean Similarity | Items/sec |
+|-------------------|-----------|-----------|--------|--------|-----------------|-----------|
+| boilerpy3         | 0.6193    | 0.8412    | 0.8743 | 0.8373 | 0.7506          | 59.2786   |
+| goose3            | 0.6092    | 0.9283    | 0.8561 | 0.8755 | 0.8344          | 9.817     |
+| inscriptis        | 0.6483    | 0.4561    | 0.9711 | 0.5869 | 0.5092          | 73.4007   |
+| news-please       | 0.6187    | 0.9105    | 0.8952 | 0.8861 | 0.8133          | 4.8152    |
+| newspaper3k       | 0.6242    | 0.9281    | 0.9139 | 0.9041 | 0.8868          | 7.6203    |
+| resiliparse-plain | 0.6559    | 0.4398    | 0.9966 | 0.5748 | 0.564           | 812.9227  |
+| resiliparse       | 0.6525    | 0.8529    | 0.9852 | 0.904  | 0.8819          | 514.2251  |
+| trafilatura       | 0.639     | 0.908     | 0.9485 | 0.9191 | 0.8567          | 22.3564   |
 
 
 **Parallel Results**
 
-Similarity Threshold Results - classified as successful if the similarity of the extraction was greater than 90% compared to 
-the ground truth
+Metrics are the same, only timings change. As you can see goose3 take a significant boost running in parallel surpassing others that also gain. Most surprising is resiliparse, still the fastest, but significantly slower in parallel than sequentially. Part of the issue with resiliparse might be the use of C++/Cython, which may not play well with Dask and dask bags, but this needs to be investigated more.   
 
-| Library           | Accuracy | Precision | Recall | FScore | Mean Similarity | Items/sec |
-|-------------------|----------|-----------|--------|--------|-----------------|-----------|
-| boilerpy3         | 0.4033   | 0.4033    | 0.4033 | 0.4033 | 0.7506          | 54.9051   |
-| goose3            | 0.6796   | 0.6796    | 0.6796 | 0.6796 | 0.8344          | 28.1997   |
-| inscriptis        | 0.0331   | 0.0331    | 0.0331 | 0.0331 | 0.5092          | 56.2126   |
-| news-please       | 0.5635   | 0.5635    | 0.5635 | 0.5635 | 0.8133          | 14.987    |
-| newspaper3k       | 0.7901   | 0.7901    | 0.7901 | 0.7901 | 0.8868          | 14.9886   |
-| resiliparse-plain | 0.0718   | 0.0718    | 0.0718 | 0.0718 | 0.564           | 61.6236   |
-| resiliparse       | 0.6298   | 0.6298    | 0.6298 | 0.6298 | 0.8819          | 60.4696   |
-| trafilatura       | 0.5635   | 0.5635    | 0.5635 | 0.5635 | 0.8567          | 28.5527   |
 
-Complex Score Results - comparing tokens from both ground truth and prediction
+| Library           | Items/sec |
+|-------------------|-----------|
+| boilerpy3         | 54.9051   |
+| goose3            | 28.1997   |
+| inscriptis        | 56.2126   |
+| news-please       | 14.987    |
+| newspaper3k       | 14.9886   |
+| resiliparse-plain | 61.6236   |
+| resiliparse       | 60.4696   |
+| trafilatura       | 28.5527   |
 
-| Library           | Accuracy | Precision | Recall | FScore | Mean Similarity | Items/sec |
-|-------------------|----------|-----------|--------|--------|-----------------|-----------|
-| boilerpy3         | 0.8444   | 0.8743    | 0.8412 | 0.8574 | 0.7506          | 54.9051   |
-| goose3            | 0.9675   | 0.8561    | 0.9283 | 0.8907 | 0.8344          | 28.1997   |
-| inscriptis        | 0.455    | 0.9711    | 0.4561 | 0.6206 | 0.5092          | 56.2126   |
-| news-please       | 0.9248   | 0.8952    | 0.9105 | 0.9028 | 0.8133          | 14.987    |
-| newspaper3k       | 0.943    | 0.9139    | 0.9281 | 0.9209 | 0.8868          | 14.9886   |
-| resiliparse-plain | 0.4397   | 0.9966    | 0.4398 | 0.6103 | 0.564           | 61.6236   |
-| resiliparse       | 0.8528   | 0.9852    | 0.8529 | 0.9143 | 0.8819          | 60.4696   |
-| trafilatura       | 0.9124   | 0.9485    | 0.908  | 0.9278 | 0.8567          | 28.5527   |
-
-As you can see goose3 take a significant boost running in parallel surpassing others that also gain. Most surprising is resiliparse, still the fastest, but significantly slower in parallel than sequentially. Part of the issue with resiliparse might be the use of C++/Cython, which may not play well with Dask and dask bags, but this needs to be investigated more.   
-
-**ToDos:** Provide more insights into the metrics and how the metrics are calculated. 
+**ToDo:** Provide more insights into the metrics and how the metrics are calculated. 
 
 
 ## Using `wee-cli`
