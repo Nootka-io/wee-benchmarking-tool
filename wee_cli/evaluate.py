@@ -70,9 +70,6 @@ def eval_results(output_dir, extractors_to_eval = []):
             pred_tokens = tokenize(pred_results['extracts'][key].get('articleBody', ''))
             rt_tokens = tokenize(raw_truth['extracts'][key].get('articleBody', ''))
 
-            # accuracy the difference between the 2 vectors
-            # accuracy = float(gt_tokens == pred_tokens)
-
             # similarity scoring
             temp_sim = difflib.SequenceMatcher(None, ground_truth['extracts'][key].get('articleBody', ''), pred_results['extracts'][key].get('articleBody', ''))
             similarity_ratio = temp_sim.ratio()
@@ -85,9 +82,23 @@ def eval_results(output_dir, extractors_to_eval = []):
                 confusion_matrix['false_positives'] += 1
 
             # complex scoring
-            confusion_matrix_list.append(do_complex_scoring(gt_tokens, pred_tokens))
-        complex_scores = scores_from_cm(confusion_matrix_list)
-        results[name]['complex'] = complex_scores
+            confusion_matrix_list.append(do_complex_scoring(gt_tokens, pred_tokens, rt_tokens))
+
+        accuracy = []
+        precision = []
+        recall = []
+        fscore = [] # this is questionable, should it be calculated from precision and recall or as an average of ratios
+        for metric in confusion_matrix_list:
+            accuracy.append(metric['accuracy'])
+            precision.append(metric['precision'])
+            recall.append(metric['recall'])
+            fscore.append(metric['fscore'])
+        results[name]['complex'] = {
+            'accuracy': mean(accuracy),
+            'precision': mean(precision),
+            'recall': mean(recall),
+            'fscore': mean(fscore)
+        }
 
         # aggregate similarity scoring
         # confusion_matrix['false_positives'] = len(ground_truth['extracts'].keys()) - len(pred_results['extracts'].keys())
@@ -103,13 +114,13 @@ def eval_results(output_dir, extractors_to_eval = []):
 
     return results
 
-
 def do_complex_scoring(gt_tokens, pred_tokens, rt_tokens):
     tp = fp = fn = tn = 0
 
     pred_token_counts = dict(Counter(pred_tokens))
     gt_token_counts = dict(Counter(gt_tokens))
     rt_token_counts = dict(Counter(rt_tokens))
+    for key in (set(gt_token_counts) | set(pred_token_counts) | set(rt_token_counts)):
         true_count = gt_token_counts.get(key, 0)
         pred_count = pred_token_counts.get(key, 0)
         rt_count = rt_token_counts.get(key, 0)
@@ -118,13 +129,8 @@ def do_complex_scoring(gt_tokens, pred_tokens, rt_tokens):
         fn += max(0, true_count - pred_count)
         tn += max(0, rt_count - true_count)
     cm = [tp, fp, fn, tn]
-    cm_s = sum(cm)
-    # Normalize metrics so that longer texts do not have more weight.
 
-    if cm_s > 0:
-        cm = [tp/cm_s, fp/cm_s, fn/cm_s, tn/cm_s]
-    # breakpoint()
-    return tuple(cm)
+    return scores_from_cm([tuple(cm)])
 
 def scores_from_cm(cm):
     precision = mean([
@@ -133,7 +139,7 @@ def scores_from_cm(cm):
     recall = mean([
         recall_score(tp, fp, fn) for tp, fp, fn, tn in cm
         if tp + fn > 0])
-    f1 = 2 * precision * recall / (precision + recall)
+    f1 = 2 * precision * recall / (precision + recall) if precision + recall > 0 else 0
     accuracy = sum([(tp+tn) for tp, fp, fn, tn in cm]) / sum([(tp+tn+fn+tn) for tp, fp, fn, tn in cm])
     return {
         'accuracy': accuracy,
