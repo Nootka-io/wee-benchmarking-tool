@@ -1,5 +1,5 @@
 from wee_cli.extractors import BaseExtractor
-from trafilatura import bare_extraction
+from trafilatura import extract
 
 
 class TrafilaturaExtract(BaseExtractor):
@@ -9,8 +9,7 @@ class TrafilaturaExtract(BaseExtractor):
     @staticmethod
     def extract(html):
         try:
-            extract = bare_extraction(html)
-            res = extract.get('text')
+            res = extract(html)
         except:
             return ''
         return res
