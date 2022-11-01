@@ -55,7 +55,7 @@ class BaseExtractor:
         """
         runs the extracts in parallel using dask.
         """
-        sequence = load_sequence()
+        sequence = self.load_sequence()
         start = time.perf_counter()
         bagged = db.from_sequence(sequence)\
             .map(self.parallel_extract)
