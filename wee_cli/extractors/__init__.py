@@ -10,27 +10,24 @@ class BaseExtractor:
 
     name = 'base-extractor'
 
-    def __init__(self, output_dir='default', run_extracts_in_parallel = False):
+    def __init__(self, output_dir='default', backend = 'sequential'):
         self.extracts = {}
         self.elapsed_time = 0
         self.output_dir = output_dir
-        self.run_extracts_in_parallel = run_extracts_in_parallel
+        self.backend = backend
 
     def __call__(self):
 
-        if self.run_extracts_in_parallel:
-            self.extract_in_parallel()
-        else:
+        if self.backend == 'sequential':
             self.extract_sequentially()
+        elif self.backend == 'multiprocessingpool':
+            self.extract_w_multiprocessingpool()
+        elif self.backend == 'dask_bag':
+            self.extract_w_daskbag()
         # write to json file
         self.write_to_json()
 
-    def extract_in_parallel(self):
-        """
-        runs the extracts in parallel using dask.
-        This isn't the most effient way with dask, but the sequence is loaded first to get the timings as close as possible
-        :return:
-        """
+    def load_sequence(self):
         sequence = []
         for path in Path('datasets/scrappinghub_aeb/html').glob('*.html.gz'):
             with gzip.open(path, 'rt', encoding='utf8') as f:
@@ -40,11 +37,30 @@ class BaseExtractor:
                 'item_id': item_id,
                 'html': html
             })
-        start = time.time()
+        return sequence
+
+    def extract_w_multiprocessingpool(self):
+        """
+        runs the extracts in parallel using python multiprocessingpool.
+        """
+        sequence = self.load_sequence()
+        from multiprocessing import Pool
+        with Pool() as p:
+            start = time.perf_counter()
+            bagged = p.map(self.parallel_extract, sequence)
+            self.elapsed_time = time.perf_counter() - start
+        self.extracts = {item['item_id']: {'articleBody': item['articleBody']} for item in bagged}
+
+    def extract_w_daskbag(self):
+        """
+        runs the extracts in parallel using dask.
+        """
+        sequence = load_sequence()
+        start = time.perf_counter()
         bagged = db.from_sequence(sequence)\
             .map(self.parallel_extract)
         bagged = bagged.compute()
-        self.elapsed_time = time.time() - start
+        self.elapsed_time = time.perf_counter() - start
         self.extracts = {item['item_id']:{'articleBody': item['articleBody']} for item in bagged}
 
     def extract_sequentially(self):
@@ -52,9 +68,9 @@ class BaseExtractor:
             with gzip.open(path, 'rt', encoding='utf8') as f:
                 html = f.read()
             item_id = path.stem.split('.')[0]
-            start = time.time()
+            start = time.perf_counter()
             res = self.extract(html)
-            self.elapsed_time += time.time() - start
+            self.elapsed_time += time.perf_counter() - start
             self.extracts[item_id] = {'articleBody': res if res else ' '}
 
     def parallel_extract(self, _x):

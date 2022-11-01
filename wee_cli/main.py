@@ -13,17 +13,23 @@ from .extract import list_available_extractors, extract
 app = typer.Typer()
 
 
+class Backend(str, Enum):
+    sequential = 'sequential'
+    dask_bag = 'dask_bag'
+    multiprocessingpool = 'multiprocessingpool'
+
+
 @app.command()
 def run(
     output_dir: Optional[str] = typer.Argument('default', help="the folder where the outputs will be saved and evaluations created from"),
     extractors: Optional[List[str]] = typer.Option(None, help="which extractors your want to run. Must match the `name`. Use `list-extractors to view available extractors.`"),
-    extract_in_parallel: bool = typer.Option(False, "--extract-in-parallel", help="whether to run the extractors in parallel with Dask")
+    backend: Backend = typer.Option(Backend.sequential, case_sensitive=False, help="which backend to run")
 ):
     """
     Run both the extractors and the evaluation scripts.
     """
     print('Running the complete extraction and evaluation')
-    run_extract(output_dir, extractors, extract_in_parallel)
+    run_extract(output_dir, extractors, backend)
     run_eval(output_dir, extractors)
 
 
@@ -31,7 +37,7 @@ def run(
 def run_extract(
     output_dir: Optional[str] = typer.Argument('default', help="the folder where the outputs will be saved and evaluations created from"),
     extractors: Optional[List[str]] = typer.Option(None, help="which extractors your want to run. Must match the `name`. Use `list-extractors to view available extractors.`"),
-    extract_in_parallel: bool = typer.Option(False, "--extract-in-parallel", help="whether to run the extractors in parallel with Dask")
+    backend: Backend = typer.Option(Backend.sequential, case_sensitive=False, help="which backend to run")
 ):
     """
     Run the extractors and generate the outputs to the specified output directory.
@@ -58,7 +64,7 @@ def run_extract(
         # transient=True
     ) as progress:
         progress.add_task(description=f"Running `{what_runs}` extractors...", total=None)
-        response = extract(output_dir, extractors, extract_in_parallel)
+        response = extract(output_dir, extractors, backend)
     print('[bold green]Done running extractors \u2714 [/bold green]')
 
 @app.command()
