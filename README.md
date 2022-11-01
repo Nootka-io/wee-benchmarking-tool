@@ -46,33 +46,36 @@ the ground truth
 
 Complex Score Results - comparing tokens from both ground truth and prediction
 
-|  Library          |  Accuracy | Precision | Recall | FScore | Mean Similarity | Items/sec |
-|-------------------|-----------|-----------|--------|--------|-----------------|-----------|
-| boilerpy3         | 0.6193    | 0.8412    | 0.8743 | 0.8373 | 0.7506          | 59.2786   |
-| goose3            | 0.6092    | 0.9283    | 0.8561 | 0.8755 | 0.8344          | 9.817     |
-| inscriptis        | 0.6483    | 0.4561    | 0.9711 | 0.5869 | 0.5092          | 73.4007   |
-| news-please       | 0.6187    | 0.9105    | 0.8952 | 0.8861 | 0.8133          | 4.8152    |
-| newspaper3k       | 0.6242    | 0.9281    | 0.9139 | 0.9041 | 0.8868          | 7.6203    |
-| resiliparse-plain | 0.6559    | 0.4398    | 0.9966 | 0.5748 | 0.564           | 812.9227  |
-| resiliparse       | 0.6525    | 0.8529    | 0.9852 | 0.904  | 0.8819          | 514.2251  |
-| trafilatura       | 0.639     | 0.908     | 0.9485 | 0.9191 | 0.8567          | 22.3564   |
-
+| Library           | Accuracy | Precision | Recall | FScore | Mean Similarity | Items/sec |
+|-------------------|----------|-----------|--------|--------|-----------------|-----------|
+| boilerpy3         | 0.6381   | 0.8412    | 0.8743 | 0.8373 | 0.7506          | 60.2163   |
+| goose3            | 0.6276   | 0.9283    | 0.8561 | 0.8755 | 0.8344          | 9.919     |
+| inscriptis        | 0.6706   | 0.4561    | 0.9711 | 0.5869 | 0.5092          | 75.6116   |
+| news-please       | 0.638    | 0.9105    | 0.8952 | 0.8861 | 0.8133          | 4.9255    |
+| newspaper3k       | 0.6443   | 0.9281    | 0.9139 | 0.9041 | 0.8868          | 7.6611    |
+| resiliparse-plain | 0.6793   | 0.492     | 0.9965 | 0.6253 | 0.6054          | 769.1841  |
+| resiliparse       | 0.6754   | 0.8529    | 0.9852 | 0.904  | 0.8819          | 504.2229  |
+| trafilatura       | 0.6602   | 0.8975    | 0.9485 | 0.9113 | 0.8446          | 40.0767   |
 
 **Parallel Results**
 
-Metrics are the same, only timings change. As you can see goose3 take a significant boost running in parallel surpassing others that also gain. Most surprising is resiliparse, still the fastest, but significantly slower in parallel than sequentially. Part of the issue with resiliparse might be the use of C++/Cython, which may not play well with Dask and dask bags, but this needs to be investigated more.   
+Metrics are the same, only timings change. Dask bag adds significant overhead when serializing the text, sometimes resulting in slower results than sequential. It's my recommendation to run in parallel with pythons multiprocessing pool, and break work in chunks or use a messaging queue to solve distributed computing.     
 
 
-| Library           | Items/sec |
-|-------------------|-----------|
-| boilerpy3         | 54.9051   |
-| goose3            | 28.1997   |
-| inscriptis        | 56.2126   |
-| news-please       | 14.987    |
-| newspaper3k       | 14.9886   |
-| resiliparse-plain | 61.6236   |
-| resiliparse       | 60.4696   |
-| trafilatura       | 28.5527   |
+| Library           | Items/sec - dask bag | Items/sec - multiprocessing pool |
+|-------------------|----------------------|----------------------------------|
+| boilerpy3         | 59.3189              | 487.311                          |
+| goose3            | 29.9498              | 62.1065                          |
+| inscriptis        | 60.2938              | 515.984                          |
+| news-please       | 15.3577              | 25.7767                          |
+| newspaper3k       | 15.2595              | 23.5398                          |
+| resiliparse-plain | 65.9997              | 1215.9166                        |
+| resiliparse       | 68.0967              | 1076.61.48                       |
+| trafilatura       | 45.1772              | 304.4185                         |
+
+**Notes:**
+- the items/sec metric will vary depending on available cores, memory, and more.
+- thanks to [Phoerious](https://github.com/phoerious) for helping me work through some multiprocessing issues, https://github.com/chatnoir-eu/chatnoir-resiliparse/issues/23, resulting from dask in relation to the [resiliparse](https://github.com/chatnoir-eu/chatnoir-resiliparse) library, but affecting everything
 
 **ToDo:** Provide more insights into the metrics and how the metrics are calculated. 
 
@@ -179,6 +182,7 @@ Only one file needs to be added to `wee_cli/extractors/`. The title should be ru
 **ToDo:** add better documentation and examples
 
 ## Roadmap
+- structured data markup extraction benchmarks
 - language extraction benchmarks
 - product extraction benchmarks
 - ability to run various extraction tests
@@ -188,18 +192,17 @@ Only one file needs to be added to `wee_cli/extractors/`. The title should be ru
 
 
 ## ToDos
-- provide longer better real world examples - most samples are quite short, and goose has show to be faster than trafilutura in real world scenarios. 
+- provide longer better real world examples 
 - evaluate other metrics
 - write tests
-- package
-- add license
-- add author 
+- package (on hold since newspaper is installed from git)
 - support different dataset formats, like; prodigy, and label-studio
-- when an article is skipped how is scoring affected
 - run evaluations in parallel
-- store evaluation results
+- store evaluation results (likely in sqlite)
 - how to support anything available in scehma.org markup, and throughput of any schema extractor. 
 - export tables as MD
+- get rid of goose3 terrible logging
+
 
 ## Inspired By:
 - [Scrapinghub's Article Extraction Benchmark](https://github.com/scrapinghub/article-extraction-benchmark)

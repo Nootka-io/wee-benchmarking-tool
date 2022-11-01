@@ -17,7 +17,7 @@ dependencies = [
     "goose3==3.1.12",
     "inscriptis==2.3.1",
     "news-please==1.5.22",
-    "Resiliparse==0.13.5",
+    "Resiliparse==0.13.7",
     "dask==2022.10.0"
 ]
 
