@@ -82,97 +82,10 @@ Metrics are the same, only timings change. Dask bag adds significant overhead wh
 
 ## Using `wee-cli`
 
-**Usage**:
+**Quickstart:**
+- `wee-cli run` - this will run extractions and evaluations sequentially and output the results to the terminal. 
 
-```console
-$ wee-cli [OPTIONS] COMMAND [ARGS]...
-```
-
-**Options**:
-
-* `--install-completion`: Install completion for the current shell.
-* `--show-completion`: Show completion for the current shell, to copy it or customize the installation.
-* `--help`: Show this message and exit.
-
-**Commands**:
-
-* `list-extractors`: Print a list of all the available extractors.
-* `run`: Run both the extractors and the evaluation...
-* `run-eval`: Evaluate the results from an output...
-* `run-extract`: Run the extractors and generate the outputs...
-
-### `wee-cli list-extractors`
-
-Print a list of all the available extractors.
-
-**Usage**:
-
-```console
-$ wee-cli list-extractors [OPTIONS]
-```
-
-**Options**:
-
-* `--help`: Show this message and exit.
-
-## `wee-cli run`
-
-Run both the extractors and the evaluation scripts.
-
-**Usage**:
-
-```console
-$ wee-cli run [OPTIONS] [OUTPUT_DIR]
-```
-
-**Arguments**:
-
-* `[OUTPUT_DIR]`: the folder where the outputs will be saved and evaluations created from  [default: default]
-
-**Options**:
-
-* `--extractors TEXT`: which extractors your want to run. Must match the `name`. Use `list-extractors to view available extractors.`
-* `--help`: Show this message and exit.
-
-### `wee-cli run-eval`
-
-Evaluate the results from an output directory.
-
-**Usage**:
-
-```console
-$ wee-cli run-eval [OPTIONS] [OUTPUT_DIR]
-```
-
-**Arguments**:
-
-* `[OUTPUT_DIR]`: the folder where the outputs were saved.  [default: default]
-
-**Options**:
-
-* `--extractors TEXT`: which extractors your want to run. Must match the `name`. Use `list-extractors to view available extractors.`
-* `--help`: Show this message and exit.
-
-### `wee-cli run-extract`
-
-Run the extractors and generate the outputs to the specified output directory.
-
-**Usage**:
-
-```console
-$ wee-cli run-extract [OPTIONS] [OUTPUT_DIR]
-```
-
-**Arguments**:
-
-* `[OUTPUT_DIR]`: the folder where the outputs will be saved and evaluations created from  [default: default]
-
-**Options**:
-
-* `--extractors TEXT`: which extractors your want to run. Must match the `name`. Use `list-extractors to view available extractors.`
-* `--extract-in-parallel`: whether to run the extractors in parallel with Dask  [default: False]
-* `--help`: Show this message and exit.
-
+See [DOCS.md](https://github.com/Nootka-io/wee-benchmarking-tool/blob/main/DOCS.md) for the complete typer CLI documentation. or use `wee-cli --help`
 
 ## How to add extractors
 Only one file needs to be added to `wee_cli/extractors/`. The title should be run_[THE_NAME_OF_THE_EXTRACTOR].py. Make sure to change the `name` parameter at the start of the class, and extend the `BaseExtractor` class implementing the `extract()` method.
