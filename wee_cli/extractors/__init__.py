@@ -1,4 +1,5 @@
 import json
+from math import fsum
 from pathlib import Path
 import gzip
 import time
@@ -45,39 +46,40 @@ class BaseExtractor:
         """
         sequence = self.load_sequence()
         from multiprocessing import Pool
-        with Pool() as p:
-            start = time.perf_counter()
+        with Pool(processes=os.cpu_count() - 1) as p:
             bagged = p.map(self.parallel_extract, sequence)
-            self.elapsed_time = time.perf_counter() - start
-        self.extracts = {item['item_id']: {'articleBody': item['articleBody']} for item in bagged}
+        self.elapsed_time = fsum(t for t, _ in bagged) / (os.cpu_count() - 1)
+        self.extracts = {item['item_id']: {'articleBody': item['articleBody']} for _, item in bagged}
 
     def extract_w_daskbag(self):
         """
         runs the extracts in parallel using dask.
         """
         sequence = self.load_sequence()
-        start = time.perf_counter()
-        bagged = db.from_sequence(sequence)\
-            .map(self.parallel_extract)
-        bagged = bagged.compute()
-        self.elapsed_time = time.perf_counter() - start
-        self.extracts = {item['item_id']:{'articleBody': item['articleBody']} for item in bagged}
+        bagged = db.from_sequence(sequence).map(self.parallel_extract).compute(
+            scheduler='processes', max_workers=os.cpu_count() - 1)
+        self.elapsed_time = fsum(t for t, _ in bagged) / (os.cpu_count() - 1)
+        self.extracts = {item['item_id']: {'articleBody': item['articleBody']} for _, item in bagged}
 
     def extract_sequentially(self):
+        timings = []
         for path in Path('datasets/scrappinghub_aeb/html').glob('*.html.gz'):
             with gzip.open(path, 'rt', encoding='utf8') as f:
                 html = f.read()
             item_id = path.stem.split('.')[0]
-            start = time.perf_counter()
+            start = time.process_time()
             res = self.extract(html)
-            self.elapsed_time += time.perf_counter() - start
+            timings.append(time.process_time() - start)
             self.extracts[item_id] = {'articleBody': res if res else ' '}
+        self.elapsed_time = fsum(timings)
 
     def parallel_extract(self, _x):
         html = _x['html']
+        start = time.process_time()
         res = self.extract(html)
+        time_elapsed = time.process_time() - start
         _x['articleBody'] = res if res else ' '
-        return _x
+        return time_elapsed, _x
 
     @staticmethod
     def extract():
