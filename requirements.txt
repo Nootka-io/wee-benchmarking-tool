@@ -4,7 +4,7 @@ goose3==3.1.12
 trafilatura==1.4.0
 inscriptis==2.3.1
 news-please==1.5.22
-Resiliparse==0.13.5
+Resiliparse==0.13.7
 
 shellingham==1.5.0
 typer==0.4.2

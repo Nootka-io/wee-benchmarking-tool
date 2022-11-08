@@ -85,7 +85,7 @@ readability-lxml==0.8.1
 regex==2022.3.2
 requests==2.28.1
 requests-file==1.5.1
-Resiliparse==0.13.5
+Resiliparse==0.13.7
 rich==12.6.0
 rsa==4.7.2
 s3transfer==0.6.0
