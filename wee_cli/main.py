@@ -6,8 +6,8 @@ from rich.progress import Progress, SpinnerColumn, TextColumn, TimeElapsedColumn
 from typing import Optional, List
 import os
 
-from .evaluate import eval_results as evaluate
-from .extract import list_available_extractors, extract
+from wee_cli.evaluate import eval_results as evaluate
+from wee_cli.extract import list_available_extractors, extract
 
 
 app = typer.Typer()
