@@ -84,7 +84,6 @@ class BaseExtractor:
 
     def write_to_json(self):
         output = {
-            'extraction_time': self.extraction_time,
             'elapsed_time': self.elapsed_time,
             'extracts': self.extracts
         }
