@@ -45,10 +45,10 @@ class BaseExtractor:
         """
         sequence = self.load_sequence()
         from multiprocessing import Pool
+        start = time.perf_counter()
         with Pool() as p:
-            start = time.perf_counter()
-            bagged = p.map(self.parallel_extract, sequence)
-            self.elapsed_time = time.perf_counter() - start
+            bagged = p.map(self.extract_wrapped, sequence)
+        self.elapsed_time = time.perf_counter() - start
         self.extracts = {item['item_id']: {'articleBody': item['articleBody']} for item in bagged}
 
     def extract_w_daskbag(self):
@@ -58,22 +58,21 @@ class BaseExtractor:
         sequence = self.load_sequence()
         start = time.perf_counter()
         bagged = db.from_sequence(sequence)\
-            .map(self.parallel_extract)
+            .map(self.extract_wrapped)
         bagged = bagged.compute()
         self.elapsed_time = time.perf_counter() - start
         self.extracts = {item['item_id']:{'articleBody': item['articleBody']} for item in bagged}
 
     def extract_sequentially(self):
-        for path in Path('datasets/scrappinghub_aeb/html').glob('*.html.gz'):
-            with gzip.open(path, 'rt', encoding='utf8') as f:
-                html = f.read()
-            item_id = path.stem.split('.')[0]
-            start = time.perf_counter()
-            res = self.extract(html)
-            self.elapsed_time += time.perf_counter() - start
-            self.extracts[item_id] = {'articleBody': res if res else ' '}
+        sequence = self.load_sequence()
+        extracted = []
+        start = time.perf_counter()
+        for item in sequence:
+            extracted.append(self.extract_wrapped(item))
+        self.elapsed_time += time.perf_counter() - start
+        self.extracts = {item['item_id']: {'articleBody': item['articleBody']} for item in extracted}
 
-    def parallel_extract(self, _x):
+    def extract_wrapped(self, _x):
         html = _x['html']
         res = self.extract(html)
         _x['articleBody'] = res if res else ' '
@@ -85,6 +84,7 @@ class BaseExtractor:
 
     def write_to_json(self):
         output = {
+            'extraction_time': self.extraction_time,
             'elapsed_time': self.elapsed_time,
             'extracts': self.extracts
         }
