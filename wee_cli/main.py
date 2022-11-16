@@ -6,8 +6,8 @@ from rich.progress import Progress, SpinnerColumn, TextColumn, TimeElapsedColumn
 from typing import Optional, List
 import os
 
-from .evaluate import eval_results as evaluate
-from .extract import list_available_extractors, extract
+from wee_cli.evaluate import eval_results as evaluate
+from wee_cli.extract import list_available_extractors, extract
 
 
 app = typer.Typer()
@@ -80,7 +80,7 @@ def run_eval(
         validate_extractors(extractors)
 
     what_runs = extractors if extractors else 'ALL'
-
+    evaluate(output_dir, extractors)
     with Progress(
         SpinnerColumn(),
         TextColumn('[progress.description]{task.description}'),
@@ -92,7 +92,7 @@ def run_eval(
 
     print('[bold green]Done evaluating results \u2714 [/bold green]')
     print('Similarity Threshold Results - classified as successful if the similarity of the extraction was greater than 90% compared to the ground truth')
-    s_table = Table('Library', 'Accuracy', 'Precision', 'Recall', 'FScore', 'Mean Similarity', 'Items/sec')
+    s_table = Table('Library', 'Accuracy', 'Precision', 'Recall', 'FScore', 'Mean Similarity', 'End2End Throughput \n Items/sec', 'time on `extract()`')
     for k, v in response.items():
         s_table.add_row(
             k,
@@ -101,12 +101,13 @@ def run_eval(
             str(round(v['similarity'].get('recall'), 4) if v['similarity'].get('recall') else None),
             str(round(v['similarity'].get('fscore'), 4) if v['similarity'].get('fscore') else None),
             str(round(v['similarity'].get('mean_similarity'), 4) if v['similarity'].get('mean_similarity') else None),
-            str(round(v.get('items_sec'), 4) if v.get('items_sec') else None)
+            str(round(v.get('items_sec'), 4) if v.get('items_sec') else None),
+            str(round(v.get('time_on_extract'), 4) if v.get('time_on_extract') else None)
         )
     print(s_table)
 
     print('Complex Score Results - comparing tokens from both ground truth and prediction')
-    c_table = Table('Library', 'Accuracy', 'Precision', 'Recall', 'FScore', 'Mean Similarity', 'Items/sec')
+    c_table = Table('Library', 'Accuracy', 'Precision', 'Recall', 'FScore', 'Mean Similarity', 'End2End Throughput \n Items/sec', 'Extracted Throughput \n Items/sec')
     for k, v in response.items():
         c_table.add_row(
             k,
@@ -115,7 +116,8 @@ def run_eval(
             str(round(v['complex'].get('recall'), 4) if v['complex'].get('recall') else None),
             str(round(v['complex'].get('fscore'), 4) if v['complex'].get('fscore') else None),
             str(round(v['similarity'].get('mean_similarity'), 4) if v['similarity'].get('mean_similarity') else None),
-            str(round(v.get('items_sec'), 4) if v.get('items_sec') else None)
+            str(round(v.get('items_sec'), 4) if v.get('items_sec') else None),
+            str(round(v.get('ips_extraction'), 4) if v.get('ips_extraction') else None)
         )
     print(c_table)
 
