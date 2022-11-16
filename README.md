@@ -34,48 +34,53 @@ Similarity Threshold Results - classified as successful if the similarity of the
 the ground truth
 
 | Library           | Accuracy | Precision | Recall | FScore | Mean Similarity | Items/sec |
-|-------------------|----------|-----------|--------|--------|-----------------|-----------| 
-| boilerpy3         | 0.4033   | 0.4033    | 0.4033 | 0.4033 | 0.7506          | 59.2786   |
-| goose3            | 0.6796   | 0.6796    | 0.6796 | 0.6796 | 0.8344          | 9.817     |
-| inscriptis        | 0.0331   | 0.0331    | 0.0331 | 0.0331 | 0.5092          | 73.4007   |
-| news-please       | 0.5635   | 0.5635    | 0.5635 | 0.5635 | 0.8133          | 4.8152    |
-| newspaper3k       | 0.7901   | 0.7901    | 0.7901 | 0.7901 | 0.8868          | 7.6203    |
-| resiliparse-plain | 0.0718   | 0.0718    | 0.0718 | 0.0718 | 0.564           | 812.9227  |
-| resiliparse       | 0.6298   | 0.6298    | 0.6298 | 0.6298 | 0.8819          | 514.2251  |
-| trafilatura       | 0.5635   | 0.5635    | 0.5635 | 0.5635 | 0.8567          | 22.3564   |
+|-------------------|----------|-----------|--------|--------|-----------------|-----------|
+| boilerpy3         | 0.4033   | 0.4033    | 0.4033 | 0.4033 | 0.7506          | 57.5429   |
+| goose3            | 0.6796   | 0.6796    | 0.6796 | 0.6796 | 0.8344          | 9.8552    |
+| inscriptis        | 0.0331   | 0.0331    | 0.0331 | 0.0331 | 0.5092          | 74.6064   |
+| news-please       | 0.558    | 0.558     | 0.558  | 0.558  | 0.812           | 4.8268    |
+| newspaper3k       | 0.7845   | 0.7845    | 0.7845 | 0.7845 | 0.8855          | 7.6327    |
+| resiliparse-plain | 0.0884   | 0.0884    | 0.0884 | 0.0884 | 0.6054          | 776.8351  |
+| resiliparse       | 0.6298   | 0.6298    | 0.6298 | 0.6298 | 0.8819          | 505.9411  |
+| trafilatura       | 0.5304   | 0.5304    | 0.5304 | 0.5304 | 0.8446          | 36.6354   |
+
+
 
 Complex Score Results - comparing tokens from both ground truth and prediction
 
 | Library           | Accuracy | Precision | Recall | FScore | Mean Similarity | Items/sec |
 |-------------------|----------|-----------|--------|--------|-----------------|-----------|
-| boilerpy3         | 0.6381   | 0.8412    | 0.8743 | 0.8373 | 0.7506          | 60.2163   |
-| goose3            | 0.6276   | 0.9283    | 0.8561 | 0.8755 | 0.8344          | 9.919     |
-| inscriptis        | 0.6706   | 0.4561    | 0.9711 | 0.5869 | 0.5092          | 75.6116   |
-| news-please       | 0.638    | 0.9105    | 0.8952 | 0.8861 | 0.8133          | 4.9255    |
-| newspaper3k       | 0.6443   | 0.9281    | 0.9139 | 0.9041 | 0.8868          | 7.6611    |
-| resiliparse-plain | 0.6793   | 0.492     | 0.9965 | 0.6253 | 0.6054          | 769.1841  |
-| resiliparse       | 0.6754   | 0.8529    | 0.9852 | 0.904  | 0.8819          | 504.2229  |
-| trafilatura       | 0.6602   | 0.8975    | 0.9485 | 0.9113 | 0.8446          | 40.0767   |
+| boilerpy3         | 0.6381   | 0.8412    | 0.8743 | 0.8373 | 0.7506          | 57.5429   |
+| goose3            | 0.6276   | 0.9283    | 0.8561 | 0.8755 | 0.8344          | 9.8552    |
+| inscriptis        | 0.6706   | 0.4561    | 0.9711 | 0.5869 | 0.5092          | 74.6064   |
+| news-please       | 0.638    | 0.9105    | 0.8952 | 0.8861 | 0.8133          | 4.8268    |
+| newspaper3k       | 0.6443   | 0.9281    | 0.9139 | 0.9041 | 0.8868          | 7.6327    |
+| resiliparse-plain | 0.6793   | 0.492     | 0.9965 | 0.6253 | 0.6054          | 776.8351  |
+| resiliparse       | 0.6754   | 0.8529    | 0.9852 | 0.904  | 0.8819          | 505.9411  |
+| trafilatura       | 0.6602   | 0.8975    | 0.9485 | 0.9113 | 0.8446          | 36.6354   |
 
 **Parallel Results**
 
-Metrics are the same, only timings change. Dask bag adds significant overhead when serializing the text, sometimes resulting in slower results than sequential. It's my recommendation to run in parallel with pythons multiprocessing pool, and break work in chunks or use a messaging queue to solve distributed computing.     
+Metrics are the same, only timings change.      
 
 
 | Library           | Items/sec - dask bag | Items/sec - multiprocessing pool |
 |-------------------|----------------------|----------------------------------|
-| boilerpy3         | 59.3189              | 487.311                          |
-| goose3            | 29.9498              | 62.1065                          |
-| inscriptis        | 60.2938              | 515.984                          |
-| news-please       | 15.3577              | 25.7767                          |
-| newspaper3k       | 15.2595              | 23.5398                          |
-| resiliparse-plain | 65.9997              | 1215.9166                        |
-| resiliparse       | 68.0967              | 1076.61.48                       |
-| trafilatura       | 45.1772              | 304.4185                         |
+| boilerpy3         | 58.7689              | 378.1217                         |
+| goose3            | 29.6042              | 59.5797                          |
+| inscriptis        | 59.1145              | 421.9863                         |
+| news-please       | 15.1085              | 24.9134                          |
+| newspaper3k       | 14.3891              | 23.7028                          |
+| resiliparse-plain | 64.1965              | 804.3277                         |
+| resiliparse       | 63.8425              | 801.3418                         |
+| trafilatura       | 43.1901              | 263.4183                         |
 
 **Notes:**
 - the items/sec metric will vary depending on available cores, memory, and more.
-- thanks to [Phoerious](https://github.com/phoerious) for helping me work through some multiprocessing issues, https://github.com/chatnoir-eu/chatnoir-resiliparse/issues/23, resulting from dask in relation to the [resiliparse](https://github.com/chatnoir-eu/chatnoir-resiliparse) library, but affecting everything
+- timings are "wall clocks" and purposely include overhead of the frameworks and serialization times. Different methods distributing the work in parallel the work can have different results. Eg, chunking the data or loading forma shared memory space. It's not ment to profile the inner workings of the frameworks, running a library like [scalene](https://github.com/plasma-umass/scalene) is recommended for that, and an excellent tool for profiling python apps.  
+- Dask bag adds significant overhead. It's not clear to me at this time if this is a result of overhead from the use of `concurrent.futures.ProcessPoolExecutor` under the hood or dask directly.
+  - sometimes this can result in slower results than sequential. It's my recommendation to run in parallel with pythons multiprocessing pool, and break work in chunks or use a messaging queue to solve distributed computing. 
+- Multiprocessing pool is always faster than dask in these benchmarks but may have some memory issues that are not apparent here. They are out side the scope of this article but take a look at this, https://luis-sena.medium.com/understanding-and-optimizing-python-multi-process-memory-management-24e1e5e79047, blog post for a better understanding and the official docs, https://docs.python.org/3/library/multiprocessing.shared_memory.html.
 
 **ToDo:** Provide more insights into the metrics and how the metrics are calculated. 
 
