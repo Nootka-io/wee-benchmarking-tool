@@ -71,7 +71,7 @@ Metrics are the same, only timings change.
 | inscriptis        | 59.1145              | 421.9863                         |
 | news-please       | 15.1085              | 24.9134                          |
 | newspaper3k       | 14.3891              | 23.7028                          |
-| resiliparse-plain | 64.1965              | 804.3277                         |
+| resiliparse-plain | *64.1965*            | *804.3277*                       |
 | resiliparse       | 63.8425              | 801.3418                         |
 | trafilatura       | 43.1901              | 263.4183                         |
 
